@@ -3,11 +3,12 @@ import Header from "./Header";
 import { Global, css } from "@emotion/react";
 import Head from "next/head";
 import { useSelector } from "react-redux";
+import LinearProgress from '@material-ui/core/LinearProgress';
 
-const Layout = (props) => {
+const Layout = ({children}) => {
 
   const primaryColor = useSelector(state => state.ui.colors)
-
+  const loadingState = useSelector(state => state.ui.loading)
 
   return (
     <>
@@ -16,8 +17,6 @@ const Layout = (props) => {
           :root {
             --primary: ${primaryColor ? primaryColor.firstColor : null};
             --secondary: ${primaryColor ? primaryColor.secondColor : null};
-            --gris3: #e1e1e1;
-            --naranja: #da552f;
           }
           /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
@@ -132,12 +131,19 @@ const Layout = (props) => {
         />
         {/* <link href="/static/css/app.css" rel="stylesheet" /> */}
       </Head>
-      <Header
-        css={css`
-              height: 100%;
-              padding: 120px
-            `} />
-      <main>{props.children}</main>
+      {loadingState ? <LinearProgress variant='query' color="secondary" /> : <Header
+        // css={css`
+        //       height: 100%;
+        //       padding: 120px;
+        //       width: 100vw;
+        //       position: absolute;
+        //       top: 300px;
+        //       bottom: 300px;
+        //     `} 
+
+            />}
+      
+      <main>{children}</main>
     </>
   );
 };

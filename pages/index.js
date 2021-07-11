@@ -3,18 +3,17 @@ import styled from "styled-components";
 import Layout from "../components/layout/Layout";
 import React, { useEffect } from "react";
 import { Button, Container, makeStyles, Grid } from "@material-ui/core";
-import { useRouter } from "next/router";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Category from "../components/layout/Category";
-import { Provider } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import StrapiClient from '../lib/strapi-client'
 import Result from "../components/layout/Result";
-import store from '../redux/store'
-import WhatsAppIcon from '@material-ui/icons/WhatsApp';
+import {uiFinishLoading, uiStartLoading} from '../redux/actions/uiActions'
 
 const useStyles = makeStyles({
   root: {
     marginBottom: "16px",
+    height: '100%',
   },
   line: {
     height: "24rem",
@@ -33,7 +32,7 @@ const useStyles = makeStyles({
     margin: "20px 0 20px 0",
   },
   container: {
-    marginTop: "11%",
+    height: '100%'
   },
   button: {
     padding: "30px 30px 0 30px",
@@ -51,34 +50,33 @@ const useStyles = makeStyles({
   },
   buttonsContainer: {
     paddingBottom: '2rem'
+  },
+  resultArticle: {
+    height: '100%',
+    paddingTop: '150px',
+  },
+  buttons: {
+    paddingTop: '50px',
+    paddingBottom: '50px',
+    ["@media (max-width:768px)"]: {
+      // eslint-disable-line no-useless-computed-key
+      paddingTop: '90px',
+      paddingBottom: '10px',
+    },
+    ["@media (max-width:320px)"]: {
+      // eslint-disable-line no-useless-computed-key
+      display: 'grid',
+      justifyContent: 'center',
+      alignContent: 'space-between'
+    },
   }
 });
-
-const PrimaryButton = styled(Button)`
-  text-transform: uppercase;
-  margin-bottom: 16px;
-  background-color: #3f51b5;
-  &:hover {
-    background-color: #3f51b5;
-    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.4);
-  }
-`;
-const SecondaryButton = styled(Button)`
-  text-transform: uppercase;
-  margin-bottom: 16px;
-  background-color: #E1E8EB;
-  color: black;
-  &:hover {
-    background-color: #E1E8EB;
-    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.4);
-  }
-`;
 
 const client = new StrapiClient();
 
 export default function Home() {
   const classes = useStyles();
-  const router = useRouter();
+  const dispatch = useDispatch();
 
   const [categorias, setCategorias] = React.useState([])
 
@@ -102,14 +100,14 @@ export default function Home() {
     background: `linear-gradient(to right,  ${background.firstColor} 0%,${background.secondColor} 100%)`,
     width: '100%',
     height: '100%',
+    "@media (max-width:768px)": {
+      // eslint-disable-line no-useless-computed-key
+      height: '1000px',
+    },
     display: 'grid',
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'relative'
   }
-
-  console.log(background.textColor)
-
 
   useEffect(() => {
 
@@ -136,6 +134,8 @@ export default function Home() {
 
     setResult(article)
     setLoading(true)
+    dispatch(uiStartLoading())
+    setTimeout(function () { dispatch(uiFinishLoading()) }, 1000);
     setTimeout(function () { setLoading(false) }, 1000);
 
   }
@@ -149,8 +149,10 @@ export default function Home() {
 
     const background = await client.fetchData(`backgrounds/${rndInt}`)
     setBackground(background)
+    dispatch(uiStartLoading())
     setLoading(true)
     setTimeout(function () { setLoading(false) }, 1000);
+    setTimeout(function () { dispatch(uiFinishLoading()) }, 1000);
   }
 
   //en esta tengo que hacer una logica de filtrado
@@ -163,14 +165,9 @@ export default function Home() {
   // }
 
   return (
-    <Provider store={store}>
-      <div style={containerBackground}>
+      <div style={containerBackground} className={classes.container}>
         <Layout>
           <div>
-            <Head>
-              <title>Learn the Thing</title>
-              <link rel="icon" href="/favicon.ico" />
-            </Head>
             {/* <Container maxWidth="lg" className={classes.container}></Container> */}
             {/* <Category categories={categorias} /> */}
             {!loading ? <Grid container
@@ -178,15 +175,16 @@ export default function Home() {
               alignItems="center"
               justify="center"
               className={classes.buttonsContainer}>
-              <Result result={result} colors={background} />
+              <div className={classes.buttons}>
+                <Button variant="contained"
+                  style={buttonCecondaryStyle}
+                  className={classes.buttonChangeArticle} onClick={getStaticProps2}>Change article</Button>
 
-              <Button variant="contained"
-                style={buttonCecondaryStyle}
-                startIcon={<WhatsAppIcon />} className={classes.buttonChangeArticle} onClick={getStaticProps2}>Change article</Button>
-
-              <Button variant="contained"
-                style={buttonPrimaryStyle}
-                startIcon={<WhatsAppIcon />} onClick={getBackgrounds}>Change background</Button>
+                <Button variant="contained"
+                  style={buttonPrimaryStyle}
+                  onClick={getBackgrounds}>Change background</Button>
+              </div>
+              <Result result={result} colors={background} className={classes.resultArticle}/>
             </Grid> :
               <Grid container
                 spacing={0}
@@ -199,6 +197,5 @@ export default function Home() {
           </div>
         </Layout>
       </div>
-    </Provider>
   );
 }

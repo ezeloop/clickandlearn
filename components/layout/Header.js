@@ -49,8 +49,6 @@ const ContainerHeader = styled.div`
   align-items: center;
   justify-content: space-between;
   height: 100%;
-  position: 'absolute';
-  top: 0
 
   @media (min-width: 768px) {
     display: flex;
@@ -69,6 +67,10 @@ const Header = () => {
       css={css`
         border-bottom: 7px solid white;
         box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.2);
+        position: absolute;
+        top: 0;
+        width: 100%;
+        z-index: 1;
       `}
     >
       <ContainerHeader>

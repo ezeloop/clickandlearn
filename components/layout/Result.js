@@ -16,8 +16,11 @@ import {
 const useStyles = makeStyles({
   root: {
     width: '100%',
-    padding: '50px',
-
+    maxHeight: '500px',
+    ["@media (max-width:768px)"]: {
+      // eslint-disable-line no-useless-computed-key
+      maxHeight: '300px',
+    },
   },
   media: {
     height: 140,
@@ -26,7 +29,11 @@ const useStyles = makeStyles({
     display: 'grid',
     justifyContent: 'center',
     alignContent: 'center',
-    padding: '1rem'
+    padding: '1rem',
+    ["@media (max-width:768px)"]: {
+      // eslint-disable-line no-useless-computed-key
+      paddingTop: '1rem',
+    },
   },
   image: {
     height: '100%',
@@ -34,13 +41,14 @@ const useStyles = makeStyles({
   imageContainer: {
     display: 'grid',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignContent: 'center',
     margin: 0,
-    border: '7px solid white'
+    border: '7px solid white',
+    boxShadow: '0 10px 4px 0 rgba(0, 0, 0, 0.2)'
   },
   icons: {
     margin: '1rem 1rem'
-  }
+  },
 });
 
 export default function Result({ result, colors }) {
@@ -123,8 +131,8 @@ export default function Result({ result, colors }) {
               <div className={classes.imageContainer}>
                 <Image
                   src={`http://localhost:1337${result.image.url}`}
-                  height={result.image.formats.medium.height}
-                  width={result.image.formats.medium.width}
+                  height={result.image.formats.small.height}
+                  width={result.image.formats.small.width}
                   className={classes.image}
                   priority
                 />
