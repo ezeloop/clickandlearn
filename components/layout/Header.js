@@ -5,6 +5,7 @@ import { css } from "@emotion/react";
 import { makeStyles } from "@material-ui/core/styles";
 import StyleIcon from '@material-ui/icons/Style';
 import Image from "next/image";
+import { useSelector } from "react-redux";
 
 
 const useStyles = makeStyles({
@@ -43,11 +44,13 @@ const ContainerHeader = styled.div`
   width: 100%;
   height: 100%;
   margin: 0 auto;
-  background-color: #203A43;
+  background-color: var(--primary);
   display: grid;
   align-items: center;
   justify-content: space-between;
   height: 100%;
+  position: 'absolute';
+  top: 0
 
   @media (min-width: 768px) {
     display: flex;
@@ -90,9 +93,9 @@ const Header = () => {
             </div>
           </div>
         </Link>
-        <div>
+        {/* <div>
           <StyleIcon fontSize="large" className={classes.buttonBackground}/>
-        </div>
+        </div> */}
 
         {/* agregar aqui un boton para cambiar el background color */}
       </ContainerHeader>

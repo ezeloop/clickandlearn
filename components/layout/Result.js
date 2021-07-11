@@ -1,31 +1,51 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Image from 'next/image'
 import Grid from '@material-ui/core/Grid';
+import { setColors } from '../../redux/actions/uiActions';
+import {
+  TwitterShareButton,
+  WhatsappShareButton,
+
+  TwitterIcon,
+  WhatsappIcon,
+} from "react-share";
 
 const useStyles = makeStyles({
   root: {
     width: '100%',
-    padding: '50px'
+    padding: '50px',
+
   },
   media: {
     height: 140,
   },
-  // imageContainer: {
-  //   width: '400px'
-  // }
+  textContainer: {
+    display: 'grid',
+    justifyContent: 'center',
+    alignContent: 'center',
+    padding: '1rem'
+  },
+  image: {
+    height: '100%',
+  },
+  imageContainer: {
+    display: 'grid',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 0,
+    border: '7px solid white'
+  },
+  icons: {
+    margin: '1rem 1rem'
+  }
 });
 
-export default function Result({ result }) {
+export default function Result({ result, colors }) {
   const classes = useStyles();
+  const dispatch = useDispatch()
 
   const selectedCategory = useSelector(state => state.category.category)
 
@@ -68,37 +88,72 @@ export default function Result({ result }) {
   //   // }
   // }, [])
 
+  React.useEffect(() => {
+    if (result) {
+      dispatch(setColors(colors))
+    }
+  }, [result])
+
+  const buttonPrimaryStyle = {
+    background: colors.firstColor,
+    color: colors.textColor
+  }
+
+  const textColor = {
+    color: colors.textColor,
+    textAlign: 'justify'
+  }
 
   return (
     <>
       {result ? (
         <Grid container className={classes.root} justifycontent="center" spacing={2}>
-          <Grid item xs={6}>
+          <Grid xs={12} md={6} lg={6} className={classes.textContainer}>
             {result.categoria && (
-              <Typography gutterBottom variant="h5" component="h2">
+              <Typography gutterBottom style={textColor} variant="h5" component="h2">
                 {result.name} ({result.categoria.name})
               </Typography>)
             }
-            <Typography variant="body2" color="textSecondary" component="p">
+            <Typography variant="body2" style={textColor} component="p">
               {result.text}
             </Typography>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6} lg={6}>
             {result.image && (
               <div className={classes.imageContainer}>
                 <Image
                   src={`http://localhost:1337${result.image.url}`}
-                  height={500}
-                  width={600}
+                  height={result.image.formats.medium.height}
+                  width={result.image.formats.medium.width}
+                  className={classes.image}
                   priority
                 />
               </div>
             )}
           </Grid>
-          <Grid item xs={12}>
-            <Button size="small" color="primary">
-              Share via whatsapp
-            </Button>
+          <Grid container
+            spacing={0}
+            alignItems="center"
+            justify="flex-end">
+            {result && (
+              <>
+                <WhatsappShareButton
+                  url="Aprende mas en: https://lalala/"
+                  className={classes.icons}
+                  title={`${result.name} - ${result.text}`}
+                  separator="- "
+                >
+                  <WhatsappIcon size={42} round />
+                </WhatsappShareButton>
+                <TwitterShareButton
+                  className={classes.icons}
+                  url="Aprende mas en: https://lalala/"
+                  title={`${result.name} - ${result.text}`}
+                >
+                  <TwitterIcon size={42} round />
+                </TwitterShareButton>
+              </>
+            )}
           </Grid>
         </Grid>
         /* <Image src={result.image} width={200} height={200}/> */

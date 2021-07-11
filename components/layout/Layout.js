@@ -2,15 +2,20 @@ import React from "react";
 import Header from "./Header";
 import { Global, css } from "@emotion/react";
 import Head from "next/head";
+import { useSelector } from "react-redux";
 
 const Layout = (props) => {
+
+  const primaryColor = useSelector(state => state.ui.colors)
+
+
   return (
     <>
       <Global
         styles={css`
           :root {
-            --gris: #3d3d3d;
-            --gris2: #6f6f6f;
+            --primary: ${primaryColor ? primaryColor.firstColor : null};
+            --secondary: ${primaryColor ? primaryColor.secondColor : null};
             --gris3: #e1e1e1;
             --naranja: #da552f;
           }
@@ -127,7 +132,11 @@ const Layout = (props) => {
         />
         {/* <link href="/static/css/app.css" rel="stylesheet" /> */}
       </Head>
-      <Header />
+      <Header
+        css={css`
+              height: 100%;
+              padding: 120px
+            `} />
       <main>{props.children}</main>
     </>
   );

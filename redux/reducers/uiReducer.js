@@ -3,11 +3,13 @@ import {
   HIDE_ALERT,
   START_LOADING,
   FINISH_LOADING,
+  SET_COLORS
 } from "../types/types";
 
 const initialState = {
   loading: false,
   msgError: null,
+  colors: null
 };
 
 export const uiReducer = (state = initialState, action) => {
@@ -35,6 +37,12 @@ export const uiReducer = (state = initialState, action) => {
         ...state,
         loading: false,
       };
+
+    case SET_COLORS: 
+      return {
+        ...state,
+        colors : action.payload
+      }
 
     default:
       return state;
