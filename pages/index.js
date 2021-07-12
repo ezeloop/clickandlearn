@@ -31,9 +31,6 @@ const useStyles = makeStyles({
     lineHeight: "27px",
     margin: "20px 0 20px 0",
   },
-  container: {
-    height: '100%'
-  },
   button: {
     padding: "30px 30px 0 30px",
   },
@@ -56,7 +53,7 @@ const useStyles = makeStyles({
     paddingTop: '150px',
   },
   buttons: {
-    paddingTop: '50px',
+    paddingTop: '90px',
     paddingBottom: '50px',
     ["@media (max-width:768px)"]: {
       // eslint-disable-line no-useless-computed-key
@@ -94,19 +91,6 @@ export default function Home() {
   const buttonCecondaryStyle = {
     background: background.secondColor,
     color: background.textColor,
-  }
-
-  const containerBackground = {
-    background: `linear-gradient(to right,  ${background.firstColor} 0%,${background.secondColor} 100%)`,
-    width: '100%',
-    height: '100%',
-    "@media (max-width:768px)": {
-      // eslint-disable-line no-useless-computed-key
-      height: '1000px',
-    },
-    display: 'grid',
-    justifyContent: 'center',
-    alignItems: 'center',
   }
 
   useEffect(() => {
@@ -165,8 +149,8 @@ export default function Home() {
   // }
 
   return (
-      <div style={containerBackground} className={classes.container}>
         <Layout>
+        
           <div>
             {/* <Container maxWidth="lg" className={classes.container}></Container> */}
             {/* <Category categories={categorias} /> */}
@@ -194,8 +178,9 @@ export default function Home() {
                 <CircularProgress color="secondary" />
               </Grid>
             }
+
           </div>
         </Layout>
-      </div>
+     
   );
 }

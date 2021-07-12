@@ -4,14 +4,28 @@ import { Global, css } from "@emotion/react";
 import Head from "next/head";
 import { useSelector } from "react-redux";
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Footer from "./Footer";
 
 const Layout = ({children}) => {
 
   const primaryColor = useSelector(state => state.ui.colors)
   const loadingState = useSelector(state => state.ui.loading)
 
+  const containerBackground = {
+    background: `linear-gradient(to right,  ${primaryColor.firstColor} 0%,${primaryColor.secondColor} 100%)`,
+    width: '100%',
+    height: '100%',
+    "@media (max-width:768px)": {
+      // eslint-disable-line no-useless-computed-key
+      height: '1000px',
+    },
+    display: 'grid',
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
+
   return (
-    <>
+    <div style={containerBackground}>
       <Global
         styles={css`
           :root {
@@ -144,7 +158,8 @@ const Layout = ({children}) => {
             />}
       
       <main>{children}</main>
-    </>
+      <Footer />
+    </div>
   );
 };
 
