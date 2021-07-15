@@ -16,10 +16,11 @@ import {
 const useStyles = makeStyles({
   root: {
     width: '100%',
-    maxHeight: '500px',
+    maxHeight: '100%',
+    background: `linear-gradient(to right,  var(--primary) 0%,var(--secondary) 100%)`,
     ["@media (max-width:768px)"]: {
       // eslint-disable-line no-useless-computed-key
-      maxHeight: '300px',
+      
     },
   },
   media: {
@@ -112,6 +113,8 @@ export default function Result({ result, colors }) {
     textAlign: 'justify'
   }
 
+  
+
   return (
     <>
       {result ? (
@@ -130,7 +133,7 @@ export default function Result({ result, colors }) {
             {result.image && (
               <div className={classes.imageContainer}>
                 <Image
-                  src={`http://localhost:1337${result.image.url}`}
+                  src={`${result.image.url}`}
                   height={result.image.formats.small.height}
                   width={result.image.formats.small.width}
                   className={classes.image}

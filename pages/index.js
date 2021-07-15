@@ -8,7 +8,7 @@ import Category from "../components/layout/Category";
 import { useSelector, useDispatch } from 'react-redux';
 import StrapiClient from '../lib/strapi-client'
 import Result from "../components/layout/Result";
-import {uiFinishLoading, uiStartLoading} from '../redux/actions/uiActions'
+import { uiFinishLoading, uiStartLoading } from '../redux/actions/uiActions'
 
 const useStyles = makeStyles({
   root: {
@@ -35,7 +35,11 @@ const useStyles = makeStyles({
     padding: "30px 30px 0 30px",
   },
   buttonChangeArticle: {
-    marginRight: '30px'
+    marginRight: '30px',
+    ["@media (max-width:320px)"]: {
+      // eslint-disable-line no-useless-computed-key
+      margin: '20px'
+    },
   },
   spinner: {
     width: '100%',
@@ -64,7 +68,7 @@ const useStyles = makeStyles({
       // eslint-disable-line no-useless-computed-key
       display: 'grid',
       justifyContent: 'center',
-      alignContent: 'space-between'
+      alignContent: 'space-between',
     },
   }
 });
@@ -77,27 +81,47 @@ export default function Home() {
 
   const [categorias, setCategorias] = React.useState([])
 
-  const [loading, setLoading] = React.useState(false)
+  const loadingState = useSelector(state => state.ui.loading)
 
   const [result, setResult] = React.useState({})
 
   const [background, setBackground] = React.useState({})
 
+  const [buttonPrimary, setButtonPrimary] = React.useState({})
+
+  const [buttonSecondary, setButtonSecondary] = React.useState({})
+
   const buttonPrimaryStyle = {
     background: background.firstColor,
-    color: background.textColor,
+    color: background.textColor
   }
 
-  const buttonCecondaryStyle = {
+  const buttonSecondaryStyle = {
     background: background.secondColor,
-    color: background.textColor,
+    color: background.textColor
   }
+  
+
 
   useEffect(() => {
 
     getStaticProps();
     getStaticProps2();
     getBackgrounds();
+
+    if (background) {
+      setButtonPrimary({
+        background: background.firstColor,
+        color: background.textColor,
+      })
+
+      setButtonSecondary({
+        background: background.secondColor,
+        color: background.textColor,
+      })
+    }
+
+
   }, [])
 
   const getStaticProps = async () => {
@@ -112,30 +136,28 @@ export default function Home() {
     //tengo que ver el tamaño, para hacer length y hacer un math random de su cantidad
 
     //rndInt sera un id random para hacer el fetch y traer los resultados
-    const rndInt = Math.floor(Math.random() * result.length) + 1
+    const rndInt = Math.floor(Math.random() * result.length) 
 
-    const article = await client.fetchData(`the-things/${rndInt}`)
+    const article = result[rndInt]
 
     setResult(article)
-    setLoading(true)
     dispatch(uiStartLoading())
     setTimeout(function () { dispatch(uiFinishLoading()) }, 1000);
-    setTimeout(function () { setLoading(false) }, 1000);
 
   }
 
   const getBackgrounds = async () => {
     const result = await client.fetchData(`backgrounds`)
+
     //tengo que ver el tamaño, para hacer length y hacer un math random de su cantidad
 
     //rndInt sera un id random para hacer el fetch y traer los resultados
-    const rndInt = Math.floor(Math.random() * result.length) + 1
+    const rndInt = Math.floor(Math.random() * result.length)
 
-    const background = await client.fetchData(`backgrounds/${rndInt}`)
+    const background = result[rndInt]
+
     setBackground(background)
     dispatch(uiStartLoading())
-    setLoading(true)
-    setTimeout(function () { setLoading(false) }, 1000);
     setTimeout(function () { dispatch(uiFinishLoading()) }, 1000);
   }
 
@@ -149,38 +171,38 @@ export default function Home() {
   // }
 
   return (
-        <Layout>
-        
-          <div>
-            {/* <Container maxWidth="lg" className={classes.container}></Container> */}
-            {/* <Category categories={categorias} /> */}
-            {!loading ? <Grid container
-              spacing={0}
-              alignItems="center"
-              justify="center"
-              className={classes.buttonsContainer}>
-              <div className={classes.buttons}>
-                <Button variant="contained"
-                  style={buttonCecondaryStyle}
-                  className={classes.buttonChangeArticle} onClick={getStaticProps2}>Change article</Button>
+    <Layout>
 
-                <Button variant="contained"
-                  style={buttonPrimaryStyle}
-                  onClick={getBackgrounds}>Change background</Button>
-              </div>
-              <Result result={result} colors={background} className={classes.resultArticle}/>
-            </Grid> :
-              <Grid container
-                spacing={0}
-                alignItems="center"
-                justify="center"
-                className={classes.spinner}>
-                <CircularProgress color="secondary" />
-              </Grid>
-            }
+      <div>
+        {/* <Container maxWidth="lg" className={classes.container}></Container> */}
+        {/* <Category categories={categorias} /> */}
+        {!loadingState  ? <Grid container
+          spacing={0}
+          alignItems="center"
+          justify="center"
+          className={classes.buttonsContainer}>
+          <div className={classes.buttons}>
+            <Button variant="contained"
+              style={buttonSecondaryStyle}
+              className={classes.buttonChangeArticle} onClick={getStaticProps2}>Change article</Button>
 
+            <Button variant="contained"
+              style={buttonPrimaryStyle}
+              onClick={getBackgrounds}>Change background</Button>
           </div>
-        </Layout>
-     
+          <Result result={result} colors={background} className={classes.resultArticle} />
+        </Grid> :
+          <Grid container
+            spacing={0}
+            alignItems="center"
+            justify="center"
+            className={classes.spinner}>
+            <CircularProgress color="secondary" />
+          </Grid>
+        }
+
+      </div>
+    </Layout>
+
   );
 }

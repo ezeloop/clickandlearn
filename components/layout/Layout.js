@@ -6,23 +6,30 @@ import { useSelector } from "react-redux";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Footer from "./Footer";
 
-const Layout = ({children}) => {
+const Layout = ({ children }) => {
 
   const primaryColor = useSelector(state => state.ui.colors)
   const loadingState = useSelector(state => state.ui.loading)
 
-  const containerBackground = {
-    background: `linear-gradient(to right,  ${primaryColor.firstColor} 0%,${primaryColor.secondColor} 100%)`,
-    width: '100%',
-    height: '100%',
-    "@media (max-width:768px)": {
-      // eslint-disable-line no-useless-computed-key
-      height: '1000px',
-    },
-    display: 'grid',
-    justifyContent: 'center',
-    alignItems: 'center',
-  }
+  const [containerBackground, setContainerBackground] = React.useState({})
+
+  React.useEffect(() => {
+    if (primaryColor) {
+      setContainerBackground({
+        background: `linear-gradient(to right,  ${primaryColor.firstColor} 0%,${primaryColor.secondColor} 100%)`,
+        width: '100%',
+        height: '100%',
+        "@media (max-width:768px)": {
+          // eslint-disable-line no-useless-computed-key
+          height: '1000px',
+        },
+        display: 'grid',
+        justifyContent: 'center',
+        alignItems: 'center',
+      })
+
+    }
+  }, [primaryColor])
 
   return (
     <div style={containerBackground}>
@@ -31,6 +38,7 @@ const Layout = ({children}) => {
           :root {
             --primary: ${primaryColor ? primaryColor.firstColor : null};
             --secondary: ${primaryColor ? primaryColor.secondColor : null};
+            --text: ${primaryColor ? primaryColor.textColor : null};
           }
           /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
@@ -71,10 +79,11 @@ const Layout = ({children}) => {
 
           /* Set core body defaults */
           body {
-            min-height: 100vh;
-            text-rendering: optimizeSpeed;
-            line-height: 1.5;
             font-family: "Azo Sans", sans-serif;
+            min-height: 100%;
+            height: auto !important;
+            height: 100%;
+            margin: 0 auto -142px; 
           }
 
           /* A elements that don't have a class get default styles */
@@ -146,17 +155,17 @@ const Layout = ({children}) => {
         {/* <link href="/static/css/app.css" rel="stylesheet" /> */}
       </Head>
       {loadingState ? <LinearProgress variant='query' color="secondary" /> : <Header
-        // css={css`
-        //       height: 100%;
-        //       padding: 120px;
-        //       width: 100vw;
-        //       position: absolute;
-        //       top: 300px;
-        //       bottom: 300px;
-        //     `} 
+      // css={css`
+      //       height: 100%;
+      //       padding: 120px;
+      //       width: 100vw;
+      //       position: absolute;
+      //       top: 300px;
+      //       bottom: 300px;
+      //     `} 
 
-            />}
-      
+      />}
+
       <main>{children}</main>
       <Footer />
     </div>
